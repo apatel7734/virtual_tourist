@@ -15,6 +15,7 @@
 		758254731B00763D00205F85 /* Virtual_TouristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758254721B00763D00205F85 /* Virtual_TouristTests.swift */; };
 		75FA81111B1BA61A00A31AD7 /* LastMapState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FA81101B1BA61A00A31AD7 /* LastMapState.swift */; };
 		75FA81131B1C36FB00A31AD7 /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FA81121B1C36FB00A31AD7 /* PhotoAlbumViewController.swift */; };
+		75FA81151B1CF78100A31AD7 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FA81141B1CF78100A31AD7 /* PhotoCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		758254721B00763D00205F85 /* Virtual_TouristTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Virtual_TouristTests.swift; sourceTree = "<group>"; };
 		75FA81101B1BA61A00A31AD7 /* LastMapState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastMapState.swift; sourceTree = "<group>"; };
 		75FA81121B1C36FB00A31AD7 /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
+		75FA81141B1CF78100A31AD7 /* PhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 				7582545E1B00763D00205F85 /* LocationMapViewController.swift */,
 				75FA81121B1C36FB00A31AD7 /* PhotoAlbumViewController.swift */,
 				75FA81101B1BA61A00A31AD7 /* LastMapState.swift */,
+				75FA81141B1CF78100A31AD7 /* PhotoCell.swift */,
 				758254601B00763D00205F85 /* Main.storyboard */,
 				758254631B00763D00205F85 /* Images.xcassets */,
 				758254651B00763D00205F85 /* LaunchScreen.xib */,
@@ -219,6 +222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7582545F1B00763D00205F85 /* LocationMapViewController.swift in Sources */,
+				75FA81151B1CF78100A31AD7 /* PhotoCell.swift in Sources */,
 				7582545D1B00763D00205F85 /* AppDelegate.swift in Sources */,
 				75FA81111B1BA61A00A31AD7 /* LastMapState.swift in Sources */,
 				75FA81131B1C36FB00A31AD7 /* PhotoAlbumViewController.swift in Sources */,
