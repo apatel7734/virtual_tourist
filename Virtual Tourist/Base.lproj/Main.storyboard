@@ -18,13 +18,13 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" showsBuildings="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hpO-Hs-Bbb">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="hpO-Hs-Bbb" secondAttribute="trailing" constant="-16" id="CBF-iS-11P"/>
-                            <constraint firstItem="hpO-Hs-Bbb" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="topMargin" id="CMk-90-AlB"/>
+                            <constraint firstItem="hpO-Hs-Bbb" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="topMargin" constant="64" id="CMk-90-AlB"/>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="hpO-Hs-Bbb" secondAttribute="bottom" id="RJg-hs-Krv"/>
                             <constraint firstItem="hpO-Hs-Bbb" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="-16" id="T4M-f9-pYY"/>
                         </constraints>
@@ -51,13 +51,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="VSr-dC-If9">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="129"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="91"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="129" id="Ice-jB-tfJ"/>
+                                    <constraint firstAttribute="height" constant="91" id="Ice-jB-tfJ"/>
                                 </constraints>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="LRW-YX-5a1">
-                                <rect key="frame" x="0.0" y="129" width="600" height="471"/>
+                                <rect key="frame" x="0.0" y="151" width="600" height="449"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="67U-wy-LTI">
                                     <size key="itemSize" width="50" height="50"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -83,11 +83,14 @@
                             <constraint firstItem="LRW-YX-5a1" firstAttribute="leading" secondItem="IOw-93-mX0" secondAttribute="leadingMargin" constant="-16" id="cUW-ps-ApY"/>
                             <constraint firstItem="1DW-dx-duw" firstAttribute="top" secondItem="LRW-YX-5a1" secondAttribute="bottom" id="fif-Yx-RCp"/>
                             <constraint firstItem="VSr-dC-If9" firstAttribute="leading" secondItem="IOw-93-mX0" secondAttribute="leadingMargin" constant="-16" id="mmV-cu-gtK"/>
-                            <constraint firstItem="LRW-YX-5a1" firstAttribute="top" secondItem="VSr-dC-If9" secondAttribute="bottom" id="uqk-IK-rLt"/>
+                            <constraint firstItem="LRW-YX-5a1" firstAttribute="top" secondItem="VSr-dC-If9" secondAttribute="bottom" constant="-4" id="uqk-IK-rLt"/>
                             <constraint firstAttribute="trailingMargin" secondItem="VSr-dC-If9" secondAttribute="trailing" constant="-16" id="vIb-xm-gFM"/>
-                            <constraint firstItem="VSr-dC-If9" firstAttribute="top" secondItem="IOw-93-mX0" secondAttribute="topMargin" id="wHe-eM-xNw"/>
+                            <constraint firstItem="VSr-dC-If9" firstAttribute="top" secondItem="IOw-93-mX0" secondAttribute="topMargin" constant="64" id="wHe-eM-xNw"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="mapView" destination="VSr-dC-If9" id="lQc-Ee-TCG"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mCJ-aj-f8w" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -73,6 +73,7 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
         mapView.deselectAnnotation(view.annotation, animated: false)
         println("Annotation pin Clicked")
         var photoAlbumVC = self.storyboard?.instantiateViewControllerWithIdentifier("photoalbumvc") as! PhotoAlbumViewController
+        photoAlbumVC.annotation = view.annotation
         self.navigationController?.pushViewController(photoAlbumVC, animated: true)
     }
     
