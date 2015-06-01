@@ -16,6 +16,7 @@
 		75FA81111B1BA61A00A31AD7 /* LastMapState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FA81101B1BA61A00A31AD7 /* LastMapState.swift */; };
 		75FA81131B1C36FB00A31AD7 /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FA81121B1C36FB00A31AD7 /* PhotoAlbumViewController.swift */; };
 		75FA81151B1CF78100A31AD7 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FA81141B1CF78100A31AD7 /* PhotoCell.swift */; };
+		75FA81171B1D0EF100A31AD7 /* test_photo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 75FA81161B1D0EF100A31AD7 /* test_photo.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		75FA81101B1BA61A00A31AD7 /* LastMapState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastMapState.swift; sourceTree = "<group>"; };
 		75FA81121B1C36FB00A31AD7 /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
 		75FA81141B1CF78100A31AD7 /* PhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
+		75FA81161B1D0EF100A31AD7 /* test_photo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test_photo.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 		758254591B00763D00205F85 /* Virtual Tourist */ = {
 			isa = PBXGroup;
 			children = (
+				75FA81161B1D0EF100A31AD7 /* test_photo.jpg */,
 				7582545C1B00763D00205F85 /* AppDelegate.swift */,
 				7582545E1B00763D00205F85 /* LocationMapViewController.swift */,
 				75FA81121B1C36FB00A31AD7 /* PhotoAlbumViewController.swift */,
@@ -203,6 +206,7 @@
 			files = (
 				758254621B00763D00205F85 /* Main.storyboard in Resources */,
 				758254671B00763D00205F85 /* LaunchScreen.xib in Resources */,
+				75FA81171B1D0EF100A31AD7 /* test_photo.jpg in Resources */,
 				758254641B00763D00205F85 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

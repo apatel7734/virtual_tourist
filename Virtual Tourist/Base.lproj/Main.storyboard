@@ -72,7 +72,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="151" height="138"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oDo-k2-nHe">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test_photo.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="oDo-k2-nHe">
                                                     <rect key="frame" x="0.0" y="0.0" width="151" height="138"/>
                                                 </imageView>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VX9-DO-kvd" userLabel="progressView">
@@ -148,4 +148,7 @@
             <point key="canvasLocation" x="212" y="1"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="test_photo.jpg" width="1024" height="710"/>
+    </resources>
 </document>

@@ -38,20 +38,19 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        println("viewDidLayoutSubviews.")
         //layout subviews so its cells take up of 1/3 of width.
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layout.minimumLineSpacing = 0
+        layout.minimumLineSpacing = 1
         layout.minimumInteritemSpacing = 0
         
-        let width = floor(self.photoCollectionView.frame.size.width/3)
+        var width = floor(self.photoCollectionView.frame.size.width/3)
+        width = width - 1
         layout.itemSize = CGSize(width: width, height: width)
         self.photoCollectionView.collectionViewLayout = layout
     }
     
     //MARK - collection view delegates
-    
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -61,9 +60,9 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        println("collectionView. indexPath = \(indexPath.row)")
         var photoCell = collectionView.dequeueReusableCellWithReuseIdentifier("photocell", forIndexPath: indexPath) as! PhotoCell
-        
+
+        //configure cell layouts, set data etc here.
         configureCell(photoCell)
         
         return photoCell
@@ -75,9 +74,10 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     
     func configureCell(cell: PhotoCell){
+        //configure progressbar
         cell.progressView.layer.cornerRadius = 5.0
         cell.progressView.backgroundColor = UIColor.darkGrayColor()
-        
+//        cell.progressView.hidden = true
     }
     
 }
