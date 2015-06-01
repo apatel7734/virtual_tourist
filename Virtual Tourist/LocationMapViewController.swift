@@ -22,9 +22,7 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
         
         //retrieve last saved location if any.
         var lastMapState = LastMapState.getLastMapState()
-        println("Map state before = \(lastMapState)")
         if(lastMapState.centerCoord.latitude > 0.0){
-            println("Map state = \(lastMapState)")
             var region = MKCoordinateRegionMake(lastMapState.centerCoord, lastMapState.regionSpan)
             mapView.setRegion(region, animated: true)
         }
@@ -69,6 +67,21 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
     func addAnnotation(touchCoord: CLLocationCoordinate2D){
         var placeMark = MKPlacemark(coordinate: touchCoord, addressDictionary: nil)
         self.mapView.addAnnotation(placeMark)
+    }
+    
+    func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
+        mapView.deselectAnnotation(view.annotation, animated: false)
+        println("Annotation pin Clicked")
+        var photoAlbumVC = self.storyboard?.instantiateViewControllerWithIdentifier("photoalbumvc") as! PhotoAlbumViewController
+        self.navigationController?.pushViewController(photoAlbumVC, animated: true)
+    }
+    
+
+    // MARK: - Navigation
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    // Get the new view controller using segue.destinationViewController.
+    // Pass the selected object to the new view controller.
     }
     
 }
