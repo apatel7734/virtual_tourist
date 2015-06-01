@@ -19,11 +19,27 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
         mapView.showsUserLocation = true
         mapView.delegate = self
         addLongPressGestureToMapView()
+        
+        //retrieve last saved location if any.
+        var lastMapState = LastMapState.getLastMapState()
+        println("Map state before = \(lastMapState)")
+        if(lastMapState.centerCoord.latitude > 0.0){
+            println("Map state = \(lastMapState)")
+            var region = MKCoordinateRegionMake(lastMapState.centerCoord, lastMapState.regionSpan)
+            mapView.setRegion(region, animated: true)
+        }
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewWillDisappear(animated: Bool) {
+        //save state of the map
+        var lastMapState = LastMapState(coordinate: mapView.centerCoordinate, span: mapView.region.span)
+        lastMapState.saveLastMapState()
+    }
+    
+    var filePath : String {
+        let manager = NSFileManager.defaultManager()
+        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as! NSURL
+        return url.URLByAppendingPathComponent("locationstate").path!
     }
     
     func addLongPressGestureToMapView(){
@@ -40,21 +56,20 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
     }
     
     func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer){
-        if gestureRecognizer.state != UIGestureRecognizerState.Began{
-            println("HandleLongPressGesture.Not Began")
+        //check for press up event and return so dont add pin twice
+        if gestureRecognizer.state == UIGestureRecognizerState.Ended{
             return
         }
-        println("HandleLongPressGesture.Began")
         var touchPoint: CGPoint = gestureRecognizer.locationInView(self.mapView)
         var touchMapCoord: CLLocationCoordinate2D  = self.mapView.convertPoint(touchPoint, toCoordinateFromView: self.mapView)
         addAnnotation(touchMapCoord)
     }
     
+    //add the new annotation on map to proviced coordinates
     func addAnnotation(touchCoord: CLLocationCoordinate2D){
-       var placeMark = MKPlacemark(coordinate: touchCoord, addressDictionary: nil)
+        var placeMark = MKPlacemark(coordinate: touchCoord, addressDictionary: nil)
         self.mapView.addAnnotation(placeMark)
     }
-    
     
 }
 
