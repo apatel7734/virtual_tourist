@@ -16,6 +16,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     @IBOutlet weak var photoCollectionView: UICollectionView!
     
     @IBOutlet weak var mapView: MKMapView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -28,7 +29,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         
         photoCollectionView.dataSource = self
         photoCollectionView.delegate = self
-        
+        var string = FlickerClient.signRequest()
+        println("Base string = \(string)")
     }
     
     override func didReceiveMemoryWarning() {
@@ -61,7 +63,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         var photoCell = collectionView.dequeueReusableCellWithReuseIdentifier("photocell", forIndexPath: indexPath) as! PhotoCell
-
+        
         //configure cell layouts, set data etc here.
         configureCell(photoCell)
         
@@ -77,7 +79,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         //configure progressbar
         cell.progressView.layer.cornerRadius = 5.0
         cell.progressView.backgroundColor = UIColor.darkGrayColor()
-//        cell.progressView.hidden = true
+        //        cell.progressView.hidden = true
     }
     
 }
