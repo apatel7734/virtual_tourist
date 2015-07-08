@@ -20,11 +20,14 @@ PODS:
   - AFNetworking/UIKit (2.5.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - OAuthSwift (0.3.6)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
+  - OAuthSwift (~> 0.3.4)
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
+  OAuthSwift: 3517e94380923085dfa7f23421bc3d4a61ce48c0
 
-COCOAPODS: 0.37.1
+COCOAPODS: 0.37.2

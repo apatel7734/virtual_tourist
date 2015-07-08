@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Pods-OAuthSwift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -17,12 +22,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>3097EDE0929A43938DC7D541</key>
+		<key>51EC525F3788254B64849713</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>36545B317E49A76F89EC8E92</key>
+		<key>5990013EC50EE265056E4732</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6AB376B89ADE79A885A8CE9B</key>
 		<dict>
 			<key>primary</key>
 			<true/>

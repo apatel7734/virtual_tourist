@@ -29,8 +29,13 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         
         photoCollectionView.dataSource = self
         photoCollectionView.delegate = self
-        var string = FlickerClient.signRequest()
-        println("Base string = \(string)")
+
+        //Access Token
+        FlickerClient.getRequestToken()
+        
+        
+
+
     }
     
     override func didReceiveMemoryWarning() {
