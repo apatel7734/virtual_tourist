@@ -41,8 +41,6 @@ class LastMapState {
         
         var latitudeDelta = NSUserDefaults.standardUserDefaults().doubleForKey(Keys.LATITUDE_DELTA)
         var longitudeDelta = NSUserDefaults.standardUserDefaults().doubleForKey(Keys.LONGITUDE_DELTA)
-        println("centerLat = \(centerLat), centerLng = \(centerLng)")
-        println("latitudeDelta = \(latitudeDelta), longitudeDelta = \(longitudeDelta)")
         
         var centerCoord = CLLocationCoordinate2D(latitude: centerLat, longitude: centerLng)
         var regionSpan = MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta)

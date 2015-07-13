@@ -138,7 +138,7 @@ public class OAuthSwiftClient {
             data.appendData(seperData!)
             data.appendData(sectionData!)
             data.appendData(seperData!)
-        }
+        }udac
         
         data.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         return data
@@ -184,11 +184,14 @@ public class OAuthSwiftClient {
     
     public class func signatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
         var tokenSecret: NSString = ""
-        tokenSecret = credential.oauth_token_secret.urlEncodedStringWithEncoding(dataEncoding)
+        tokenSecret = credential.consumer_secret.urlEncodedStringWithEncoding(dataEncoding)
         
         let encodedConsumerSecret = credential.consumer_secret.urlEncodedStringWithEncoding(dataEncoding)
         
         let signingKey = "\(encodedConsumerSecret)&\(tokenSecret)"
+        println("Signing Key = \(signingKey)")
+        
+//        let signingKey = "653e7a6ecc1d528c516cc8f92cf98611&fccb68c4e6103197"
         
         var parameterComponents = parameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
         parameterComponents.sort { $0 < $1 }
@@ -199,9 +202,14 @@ public class OAuthSwiftClient {
         let encodedURL = url.absoluteString!.urlEncodedStringWithEncoding(dataEncoding)
         
         let signatureBaseString = "\(method)&\(encodedURL)&\(encodedParameterString)"
+//
+//        let signatureBaseString = "GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Fwww.example.com%26oauth_consumer_key%3D653e7a6ecc1d528c516cc8f92cf98611%26oauth_nonce%3D95613465%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1305586162%26oauth_version%3D1.0"
+
+        
         
         let key = signingKey.dataUsingEncoding(NSUTF8StringEncoding)!
         let msg = signatureBaseString.dataUsingEncoding(NSUTF8StringEncoding)!
+
         let sha1 = HMAC.sha1(key: key, message: msg)!
         return sha1.base64EncodedStringWithOptions(nil)
     }

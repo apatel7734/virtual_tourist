@@ -7,13 +7,12 @@
 //
 
 import Foundation
+import OAuthSwift
 /*
 https://api.flickr.com/services/rest/?method=flickr.photos.geo.photosForLocation&api_key=0cff1ea87d47aab1baf2f0214575bb73&lat=37.8064754&lon=-122.2717999&format=json&nojsoncallback=1&auth_token=72157651649499263-2cb4c525582386ec&api_sig=99cdb5c9390968d41d0d2889a8b7c1e9
 */
 
 class FlickerClient: NetworkClient {
-    
-    
     func getPhotosForLocation(){
         var url = NSURL(string: Constants.BaseUrl)!
         //step 1. Make Request from URL
@@ -36,6 +35,7 @@ class FlickerClient: NetworkClient {
         
         var tokenUrl = getRequestTokenParam(apiSignature)
         println("Token URL = \(tokenUrl)")
+        
     }
     
     class func signRequest() ->String{
@@ -51,52 +51,71 @@ class FlickerClient: NetworkClient {
 
 func getAuthBaseString() -> String {
     
-    var oAuthNonceVal = 89601180
-    var oAuthTimestamp = 1305583298
-    var oAuthConsumerKeyVal = Constants.Consumerkey
-    var signatureMethodVal = "HMAC-SHA1"
+    //#1 get method name
+    let verb = Methods.GET
     
-    let params = [
+    //#2.a get Parameters
+    
+    var oAuthNonceVal: String = (NSUUID().UUIDString as NSString).substringToIndex(8)
+    var oAuthTimestamp: String = String(Int64(NSDate().timeIntervalSince1970))
+    var oAuthConsumerKeyVal: String = Constants.Consumerkey
+    var signatureMethodVal: String = "HMAC-SHA1"
+    var oAuthVersion = "1.0"
+    var oAuthCallback = "www.udacity.com"
+    
+    let parameters : [String : String] = [
         Parameters.OauthNonce:oAuthNonceVal,
         Parameters.OauthTimestamp:oAuthTimestamp,
         Parameters.OauthConsumerKey:oAuthConsumerKeyVal,
         Parameters.OauthSignatureMethod:signatureMethodVal,
-        Parameters.OauthVersion:1.0,
-        Parameters.OauthCallback:"www.udacity.com"
+        Parameters.OauthVersion:oAuthVersion,
+        Parameters.OauthCallback:oAuthCallback
     ]
     
-
     
-    var paramKeys = Array(params.keyEnumerator())
-
-    sort(&paramKeys)
     
-//    println("Param Keys = \(paramKeys)")
+    //sort paramKeys
+    let sortedKeys = Array(parameters.keys).sorted { (s1: String, s2: String) -> Bool in
+        s1 < s2
+    }
     
-    var baseString = "\(Methods.GET)&\(Constants.BaseUrl)?"
     var counter = 0
+    var strParams: String = ""
     
-    for (key, value) in params {
+    for key: String in sortedKeys {
         
-        let stringValue = "\(value)"
-        
-        /* Escape it */
-        let escapedValue = stringValue.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
-        
-        /* FIX: Replace spaces with '+' */
-        let replaceSpaceValue = stringValue.stringByReplacingOccurrencesOfString(" ", withString: "+", options: NSStringCompareOptions.LiteralSearch, range: nil)
-        
-        println("Key = \(key) and Val = \(replaceSpaceValue)")
+        let value = parameters[key]!
         
         if(counter == 0){
-            baseString = baseString+"\(key)=\(replaceSpaceValue)&"
-        }else if (counter == params.count){
-            baseString = baseString+"\(key)=\(replaceSpaceValue)"
+            strParams = strParams+"\(key)=\(value)&"
+        }else if (counter == (parameters.count - 1)){
+            strParams = strParams+"\(key)=\(value)"
         }else{
-            baseString = baseString+"\(key)=\(replaceSpaceValue)"
+            strParams = strParams+"\(key)=\(value)&"
         }
+        
         counter++
     }
+    
+    println("String parameters = \(strParams)")
+    
+    var customAllowedSet =  NSCharacterSet(charactersInString:"://?=&").invertedSet
+    
+    //#2.b URL encode parameters
+    var encodedParams = strParams.stringByAddingPercentEncodingWithAllowedCharacters(customAllowedSet)!
+    
+    println("String encodedParams = \(encodedParams)")
+    
+    var encodedUrl = Constants.RequestTokenUrl.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
+    
+    println("String encodedUrl = \(encodedUrl)")
+    
+    var baseString = "\(Methods.GET)&\(encodedUrl!)&\(encodedParams)"
+    
+    var signature = OAuthSwiftClient.signatureForMethod(Methods.GET, url: NSURL(string: Constants.RequestTokenUrl)!, parameters: parameters, credential: OAuthSwiftCredential(consumer_key: Constants.Consumerkey, consumer_secret: Constants.ConsumerSecret))
+    
+    println("String baseString = \(baseString)")
+    println("Signature from OAuthSwiftClient = \(signature)")
     
     return baseString
     
@@ -111,7 +130,8 @@ func getRequestTokenParam(apiSignature: String) -> String{
     var oAuthSignatureVal = apiSignature
     var oAuthCallback = "www.udacity.com"
     
-    var paramKeys = [Parameters.OauthNonce,Parameters.OauthTimestamp,Parameters.OauthConsumerKey,Parameters.OauthVersion,Parameters.OauthCallback]
+    var paramKeys = [Parameters.OauthNonce,Parameters.OauthTimestamp,Parameters.OauthConsumerKey,Parameters.OauthVersion,Parameters.OauthCallback, Parameters.OauthSignature,Parameters.OauthSignatureMethod]
+    
     
     var params = [
         Parameters.OauthNonce:oAuthNonceVal,
@@ -119,41 +139,36 @@ func getRequestTokenParam(apiSignature: String) -> String{
         Parameters.OauthConsumerKey:oAuthConsumerKeyVal,
         Parameters.OauthSignatureMethod:signatureMethodVal,
         Parameters.OauthVersion:1.0,
-        Parameters.OauthCallback:"www.udacity.com"
+        Parameters.OauthCallback:"www.udacity.com",
+        Parameters.OauthSignature: apiSignature
     ]
     
-    let sortedParams = sort(&paramKeys)
+    let sortedKeys = paramKeys.sorted { (s1: String, s2: String) -> Bool in
+        s1 < s2
+    }
     
     var baseString = "\(Constants.RequestTokenUrl)?"
     var counter = 0
     
-    for (key, value) in params {
+    for key: String in sortedKeys{
         
+        let value = params[key]!
         let stringValue = "\(value)"
         
-        /* Escape it */
-        let escapedValue = stringValue.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
-        
-        /* FIX: Replace spaces with '+' */
-        let replaceSpaceValue = stringValue.stringByReplacingOccurrencesOfString(" ", withString: "+", options: NSStringCompareOptions.LiteralSearch, range: nil)
-        
-        println("Key = \(key) and Val = \(replaceSpaceValue)")
-        
         if(counter == 0){
-            baseString = baseString+"\(key)=\(replaceSpaceValue)&"
-        }else if (counter == params.count){
-            baseString = baseString+"\(key)=\(replaceSpaceValue)"
+            baseString = baseString+"\(key)=\(stringValue)&"
+        }else if (counter == (params.count - 1)){
+            baseString = baseString+"\(key)=\(stringValue)"
         }else{
-            baseString = baseString+"\(key)=\(replaceSpaceValue)"
+            baseString = baseString+"\(key)=\(stringValue)&"
         }
         counter++
     }
+    
+    
+    
     return baseString
-    
-    
 }
-
-
 
 
 struct Constants {
