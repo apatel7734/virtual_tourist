@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09F39EDC1B54858E002EE10F /* Photos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F39EDB1B54858E002EE10F /* Photos.swift */; };
+		09F39EDE1B5485C8002EE10F /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F39EDD1B5485C8002EE10F /* Photo.swift */; };
 		27BC287AB466CA8B17B29D49 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66D329BDD85DE58EA97A8301 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7582545D1B00763D00205F85 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7582545C1B00763D00205F85 /* AppDelegate.swift */; };
 		7582545F1B00763D00205F85 /* LocationMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7582545E1B00763D00205F85 /* LocationMapViewController.swift */; };
@@ -33,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		09F39EDB1B54858E002EE10F /* Photos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photos.swift; sourceTree = "<group>"; };
+		09F39EDD1B5485C8002EE10F /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		246F2F998450AC225D9EA2BA /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		24BC001D278EA585515B4337 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		66D329BDD85DE58EA97A8301 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,6 +78,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09F39EDA1B548581002EE10F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				09F39EDB1B54858E002EE10F /* Photos.swift */,
+				09F39EDD1B5485C8002EE10F /* Photo.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		4E2000EAD0311F9FED1EE156 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -114,6 +127,7 @@
 		758254591B00763D00205F85 /* Virtual Tourist */ = {
 			isa = PBXGroup;
 			children = (
+				09F39EDA1B548581002EE10F /* Model */,
 				75FA81161B1D0EF100A31AD7 /* test_photo.jpg */,
 				75FA811A1B1D18FA00A31AD7 /* NetworkClient.swift */,
 				7582545C1B00763D00205F85 /* AppDelegate.swift */,
@@ -311,7 +325,9 @@
 				7582545F1B00763D00205F85 /* LocationMapViewController.swift in Sources */,
 				75FA81191B1D14D700A31AD7 /* FlickerClient.swift in Sources */,
 				75FA81151B1CF78100A31AD7 /* PhotoCell.swift in Sources */,
+				09F39EDE1B5485C8002EE10F /* Photo.swift in Sources */,
 				7582545D1B00763D00205F85 /* AppDelegate.swift in Sources */,
+				09F39EDC1B54858E002EE10F /* Photos.swift in Sources */,
 				75FA811B1B1D18FA00A31AD7 /* NetworkClient.swift in Sources */,
 				75FA81111B1BA61A00A31AD7 /* LastMapState.swift in Sources */,
 				75FA81131B1C36FB00A31AD7 /* PhotoAlbumViewController.swift in Sources */,

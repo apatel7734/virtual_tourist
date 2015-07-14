@@ -138,7 +138,7 @@ public class OAuthSwiftClient {
             data.appendData(seperData!)
             data.appendData(sectionData!)
             data.appendData(seperData!)
-        }udac
+        }
         
         data.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
         return data

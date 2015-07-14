@@ -10,18 +10,68 @@ import Foundation
 import OAuthSwift
 /*
 https://api.flickr.com/services/rest/?method=flickr.photos.geo.photosForLocation&api_key=0cff1ea87d47aab1baf2f0214575bb73&lat=37.8064754&lon=-122.2717999&format=json&nojsoncallback=1&auth_token=72157651649499263-2cb4c525582386ec&api_sig=99cdb5c9390968d41d0d2889a8b7c1e9
+
+//search API
+
+URL: https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=8cb9b18ff2c7e69d920b7ce056169306&lat=37.773972&lon=-122.2697222&format=json
+
 */
 
 class FlickerClient: NetworkClient {
-    func getPhotosForLocation(){
-        var url = NSURL(string: Constants.BaseUrl)!
+    
+    func getPhotosForLocation(lat: String, lng: String,completionHandler: (photos: Photos?,error: NSError?) -> Void){
+        
+        let parameters : [String: String] = [
+            Parameters.method : Methods.SearchPhotos,
+            Parameters.apiKey:Constants.Consumerkey,
+            Parameters.lat: lat,
+            Parameters.lon : lng,
+            Parameters.format : Constants.Json,
+            Parameters.NoJsonCallback : "1"
+            
+        ]
+        
+        var url = NSURL(string: Constants.BaseUrl + escapedParameters(parameters))!
+        
         //step 1. Make Request from URL
         let request = NSMutableURLRequest(URL: url)
         
         //step 2. define values/parameter for request
-        request.HTTPMethod = Methods.POST
+        request.HTTPMethod = Methods.GET
+        request.addValue(Parameters.ApplicationJson, forHTTPHeaderField: Parameters.Accept)
+        request.addValue(Parameters.ApplicationJson, forHTTPHeaderField: Parameters.ContentType)
+        
+        //step 3. Session
+        let session = NSURLSession.sharedSession()
+        
+        //step 4. Create task for request
+        let task = session.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
+            
+            if(error != nil){
+                //step 6. handle error.
+                //send error creating dataTask
+                completionHandler(photos: nil, error: error)
+            }else{
+                //step 7. we got response parse it.
+                self.parseJson(data, completionHandler: { (result, error) -> Void in
+                    if(error != nil){
+                        //send parsing error.
+                        completionHandler(photos: nil, error: error)
+                    }else{
+                        //send parsed result with photos
+                        let dictResult = result as? NSDictionary
+                        let photos = Photos(jsonDict: dictResult)
+                        completionHandler(photos: photos, error: nil)
+                    }
+                })
+                
+            }
+            
+        })
+        //step 5. resume task.
+        task.resume()
+        
     }
-    
     
     class func getRequestToken(){
         var url = NSURL(string: Constants.RequestTokenUrl)!
@@ -37,7 +87,7 @@ class FlickerClient: NetworkClient {
         println("Token URL = \(tokenUrl)")
         
     }
-    
+    //Generate the
     class func signRequest() ->String{
         //Create Base Request
         var baseString = getAuthBaseString()
@@ -45,6 +95,14 @@ class FlickerClient: NetworkClient {
         var apiSign = baseString.hmac(CryptoAlgorithm.SHA1, key:Constants.Consumerkey)
         println("apiSign : \(apiSign)")
         return apiSign
+    }
+    
+    
+    class func sharedInstance() -> FlickerClient{
+        struct Singleton {
+            static let instance = FlickerClient()
+        }
+        return Singleton.instance
     }
     
 }
@@ -121,7 +179,6 @@ func getAuthBaseString() -> String {
     
 }
 
-
 func getRequestTokenParam(apiSignature: String) -> String{
     var oAuthNonceVal = 89601180
     var oAuthTimestamp = 1305583298
@@ -164,9 +221,6 @@ func getRequestTokenParam(apiSignature: String) -> String{
         }
         counter++
     }
-    
-    
-    
     return baseString
 }
 
@@ -182,12 +236,13 @@ struct Constants {
 
 struct Methods {
     static let PhotosForLocation = "flickr.photos.geo.photosForLocation"
+    static let  SearchPhotos = "flickr.photos.search"
     static let POST = "POST"
     static let GET = "GET"
 }
 
 struct Parameters {
-    static let apiKeys = "api_key"
+    static let apiKey = "api_key"
     static let method = "method"
     static let OauthNonce = "oauth_nonce"
     static let OauthTimestamp = "oauth_timestamp"
@@ -205,4 +260,5 @@ struct Parameters {
     static let ApplicationJson = "application/json"
     static let ContentType = "Content-Type"
     static let Accept = "Accept"
+    static let NoJsonCallback = "nojsoncallback"
 }

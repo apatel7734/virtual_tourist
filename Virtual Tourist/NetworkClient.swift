@@ -46,7 +46,7 @@ class NetworkClient: NSObject {
         let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions.AllowFragments, error: &parsingError)
         
         if let error = parsingError{
-            println("Error = \(error)")
+            println("Parsing Error = \(error)")
             completionHandler(result: nil, error: error)
         }else{
             completionHandler(result: parsedResult, error: nil)

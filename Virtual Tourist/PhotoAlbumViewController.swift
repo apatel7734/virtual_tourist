@@ -29,13 +29,15 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         
         photoCollectionView.dataSource = self
         photoCollectionView.delegate = self
-
+        
         //Access Token
-        FlickerClient.getRequestToken()
-        
-        
+        FlickerClient.sharedInstance().getPhotosForLocation("37.773972", lng: "-122.2697222") { (photos, error) -> Void in
+            if(error == nil){
+                
+            }else{
 
-
+            }
+        }
     }
     
     override func didReceiveMemoryWarning() {
