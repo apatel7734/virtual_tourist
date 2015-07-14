@@ -17,6 +17,9 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBOutlet weak var newCollectionBtn: UIButton!
+    
+    
     var photos: [Photo]?
     
     override func viewDidLoad() {
@@ -44,6 +47,12 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         photoCollectionView.dataSource = self
         photoCollectionView.delegate = self
     }
+    
+    
+    @IBAction func onNewCollectionClicked(sender: UIButton) {
+        sender.enabled = false
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -85,11 +94,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         
         return photoCell
     }
-    
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        
-    }
-    
     
     func configureCell(cell: PhotoCell, ip: NSIndexPath){
         
