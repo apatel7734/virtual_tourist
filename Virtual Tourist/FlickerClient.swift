@@ -27,8 +27,8 @@ class FlickerClient: NetworkClient {
             Parameters.lat: lat,
             Parameters.lon : lng,
             Parameters.format : Constants.Json,
-            Parameters.NoJsonCallback : "1"
-            
+            Parameters.NoJsonCallback : "1",
+            Parameters.perPage : "50"
         ]
         
         var url = NSURL(string: Constants.BaseUrl + escapedParameters(parameters))!
@@ -261,4 +261,5 @@ struct Parameters {
     static let ContentType = "Content-Type"
     static let Accept = "Accept"
     static let NoJsonCallback = "nojsoncallback"
+    static let perPage = "per_page"
 }

@@ -17,27 +17,32 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     @IBOutlet weak var mapView: MKMapView!
     
+    var photos: [Photo]?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
         if let pin = annotation{
-            println("Pin = \(pin.coordinate.latitude) , \(pin.coordinate.longitude)")
             mapView.addAnnotation(pin)
             mapView.centerCoordinate = pin.coordinate
+            
+            //get photos for location
+            var lat = "\(pin.coordinate.latitude)"
+            var lng = "\(pin.coordinate.longitude)"
+            FlickerClient.sharedInstance().getPhotosForLocation(lat , lng: lng) { (photos, error) -> Void in
+                println("Returned from Completion handler")
+                if(error == nil){
+                    self.photos = photos?.photos
+                    self.photoCollectionView.reloadData()
+                }else{
+                    
+                }
+            }
         }
         
         photoCollectionView.dataSource = self
         photoCollectionView.delegate = self
-        
-        //Access Token
-        FlickerClient.sharedInstance().getPhotosForLocation("37.773972", lng: "-122.2697222") { (photos, error) -> Void in
-            if(error == nil){
-                
-            }else{
-
-            }
-        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -65,14 +70,18 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        if let num = photos?.count {
+            return num
+        }else{
+            return 10
+        }
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         var photoCell = collectionView.dequeueReusableCellWithReuseIdentifier("photocell", forIndexPath: indexPath) as! PhotoCell
         
         //configure cell layouts, set data etc here.
-        configureCell(photoCell)
+        configureCell(photoCell, ip: indexPath)
         
         return photoCell
     }
@@ -82,11 +91,41 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     
-    func configureCell(cell: PhotoCell){
+    func configureCell(cell: PhotoCell, ip: NSIndexPath){
+        
         //configure progressbar
         cell.progressView.layer.cornerRadius = 5.0
         cell.progressView.backgroundColor = UIColor.darkGrayColor()
-        //        cell.progressView.hidden = true
+        var photo = self.photos?[ip.row]
+        var url = getPhotoUrl(photo)
+        cell.progressView.hidden = false
+        cell.photoImgView.image = nil
+        if let imgUrl = url{
+            loadImage(imgUrl, imageView: cell.photoImgView, progressView: cell.progressView)
+        }
+    }
+    
+    func loadImage(urlString:String,imageView: UIImageView, progressView: UIView){
+        var imgURL: NSURL = NSURL(string: urlString)!
+        let request: NSURLRequest = NSURLRequest(URL: imgURL)
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
+            if error == nil {
+                imageView.image = UIImage(data: data)
+                progressView.hidden = true
+            }
+        })
+    }
+    
+    func getPhotoUrl(photo: Photo?) -> String?{
+        let farmId = photo?.getFarm()
+        let server = photo?.getServer()
+        let id = photo?.getId()
+        let secret = photo?.getSecret()
+        if(farmId !=  nil && server != nil && id != nil && secret != nil){
+            var urlStr = "https://farm\(farmId!).staticflickr.com/\(server!)/\(id!)_\(secret!).jpg"
+            return urlStr
+        }
+        return nil
     }
     
 }
