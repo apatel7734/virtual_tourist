@@ -12,15 +12,13 @@ import MapKit
 class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate{
     
     var annotation: MKAnnotation?
-    
     @IBOutlet weak var photoCollectionView: UICollectionView!
-    
     @IBOutlet weak var mapView: MKMapView!
-    
     @IBOutlet weak var newCollectionBtn: UIButton!
-    
-    
     var photos: [Photo]?
+    var totalPages = 1
+    var currentPage = 0
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,24 +31,21 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             //get photos for location
             var lat = "\(pin.coordinate.latitude)"
             var lng = "\(pin.coordinate.longitude)"
-            FlickerClient.sharedInstance().getPhotosForLocation(lat , lng: lng) { (photos, error) -> Void in
-                println("Returned from Completion handler")
-                if(error == nil){
-                    self.photos = photos?.photos
-                    self.photoCollectionView.reloadData()
-                }else{
-                    
-                }
-            }
+            //fetch flicker images
+            fetchFlickrImages(lat, lng: lng)
         }
         
         photoCollectionView.dataSource = self
         photoCollectionView.delegate = self
     }
     
-    
     @IBAction func onNewCollectionClicked(sender: UIButton) {
-        sender.enabled = false
+        if let pin = annotation{
+            newCollectionBtn.enabled = false
+            var lat = "\(pin.coordinate.latitude)"
+            var lng = "\(pin.coordinate.longitude)"
+            fetchFlickrImages(lat, lng: lng)
+        }
     }
     
     
@@ -82,24 +77,48 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         if let num = photos?.count {
             return num
         }else{
-            return 10
+            return 0
+        }
+    }
+    
+    func fetchFlickrImages(lat: String, lng: String){
+        //call network client to fetch images
+        self.photos?.removeAll(keepCapacity: true)
+        self.photoCollectionView.reloadData()
+        var nextPage = currentPage + 1
+        if (nextPage <= totalPages) && (nextPage > 0 ){
+            FlickerClient.sharedInstance().getPhotosForLocation(lat , lng: lng, pageNum: nextPage) { (photos, error) -> Void in
+                if(error == nil){
+                    self.photos = photos?.photos
+                    if let pages = photos?.pages{
+                        self.totalPages = pages
+                    }
+                    if let page = photos?.page{
+                        self.currentPage = page
+                    }
+                    self.photoCollectionView.reloadData()
+                    self.newCollectionBtn.enabled = true
+                }else{
+                    //display error alert
+                }
+            }
+        }else{
+            //last page display some message
         }
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         var photoCell = collectionView.dequeueReusableCellWithReuseIdentifier("photocell", forIndexPath: indexPath) as! PhotoCell
-        
         //configure cell layouts, set data etc here.
         configureCell(photoCell, ip: indexPath)
-        
         return photoCell
     }
     
     func configureCell(cell: PhotoCell, ip: NSIndexPath){
-        
         //configure progressbar
         cell.progressView.layer.cornerRadius = 5.0
         cell.progressView.backgroundColor = UIColor.darkGrayColor()
+        
         var photo = self.photos?[ip.row]
         var url = getPhotoUrl(photo)
         cell.progressView.hidden = false

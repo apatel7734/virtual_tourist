@@ -19,7 +19,7 @@ URL: https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=8
 
 class FlickerClient: NetworkClient {
     
-    func getPhotosForLocation(lat: String, lng: String,completionHandler: (photos: Photos?,error: NSError?) -> Void){
+    func getPhotosForLocation(lat: String, lng: String, pageNum: Int,completionHandler: (photos: Photos?,error: NSError?) -> Void){
         
         let parameters : [String: String] = [
             Parameters.method : Methods.SearchPhotos,
@@ -28,7 +28,8 @@ class FlickerClient: NetworkClient {
             Parameters.lon : lng,
             Parameters.format : Constants.Json,
             Parameters.NoJsonCallback : "1",
-            Parameters.perPage : "30"
+            Parameters.perPage : "30",
+            Parameters.page: "\(pageNum)"
         ]
         
         var url = NSURL(string: Constants.BaseUrl + escapedParameters(parameters))!
@@ -262,4 +263,5 @@ struct Parameters {
     static let Accept = "Accept"
     static let NoJsonCallback = "nojsoncallback"
     static let perPage = "per_page"
+    static let page = "page"
 }
