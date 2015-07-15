@@ -73,6 +73,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         return 1
     }
     
+    
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let num = photos?.count {
             return num
