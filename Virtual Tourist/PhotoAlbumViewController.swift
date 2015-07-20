@@ -12,13 +12,15 @@ import MapKit
 class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate{
     
     var annotation: MKAnnotation?
+    var pin: Pin?
+    
     @IBOutlet weak var photoCollectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var newCollectionBtn: UIButton!
+    
     var photos: [Photo]?
     var totalPages = 1
     var currentPage = 0
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,10 +84,16 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     
+    func reloadCollectionView(){
+        dispatch_async(dispatch_get_main_queue()) {
+            self.photoCollectionView.reloadData()
+        }
+    }
+    
     func fetchFlickrImages(lat: String, lng: String){
         //call network client to fetch images
         self.photos?.removeAll(keepCapacity: true)
-        self.photoCollectionView.reloadData()
+        reloadCollectionView()
         var nextPage = currentPage + 1
         if (nextPage <= totalPages) && (nextPage > 0 ){
             FlickerClient.sharedInstance().getPhotosForLocation(lat , lng: lng, pageNum: nextPage) { (photos, error) -> Void in
@@ -97,8 +105,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
                     if let page = photos?.page{
                         self.currentPage = page
                     }
-                    self.photoCollectionView.reloadData()
-                    self.newCollectionBtn.enabled = true
+                    self.reloadCollectionView()
+                    //                    self.newCollectionBtn.enabled = true
                 }else{
                     //display error alert
                 }
@@ -121,9 +129,10 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         cell.progressView.backgroundColor = UIColor.darkGrayColor()
         
         var photo = self.photos?[ip.row]
-        var url = getPhotoUrl(photo)
+        
         cell.progressView.hidden = false
         cell.photoImgView.image = nil
+        var url = getPhotoUrl(photo)
         if let imgUrl = url{
             loadImage(imgUrl, imageView: cell.photoImgView, progressView: cell.progressView)
         }
@@ -141,10 +150,10 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func getPhotoUrl(photo: Photo?) -> String?{
-        let farmId = photo?.getFarm()
-        let server = photo?.getServer()
-        let id = photo?.getId()
-        let secret = photo?.getSecret()
+        let farmId = photo?.farm
+        let server = photo?.server
+        let id = photo?.id
+        let secret = photo?.secret
         if(farmId !=  nil && server != nil && id != nil && secret != nil){
             var urlStr = "https://farm\(farmId!).staticflickr.com/\(server!)/\(id!)_\(secret!).jpg"
             return urlStr

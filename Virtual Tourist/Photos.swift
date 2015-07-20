@@ -33,7 +33,8 @@ class Photos{
                 let photoList = val.valueForKey("photo") as? NSArray
                 if let array = photoList{
                     for photo in array{
-                        self.photos.append(Photo(photo: photo as? NSDictionary))
+                        //TODO: create photo here
+//                        self.photos.append(Photo(photo: photo as? NSDictionary))
                     }
                 }
             }

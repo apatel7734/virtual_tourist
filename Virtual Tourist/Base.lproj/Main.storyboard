@@ -29,7 +29,7 @@
                             <constraint firstItem="hpO-Hs-Bbb" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="-16" id="T4M-f9-pYY"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="mQ0-5b-7eb"/>
+                    <navigationItem key="navigationItem" title="Locations" id="mQ0-5b-7eb"/>
                     <connections>
                         <outlet property="mapView" destination="hpO-Hs-Bbb" id="ng1-AE-NRf"/>
                     </connections>
