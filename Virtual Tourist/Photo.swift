@@ -45,47 +45,11 @@ class Photo: NSManagedObject {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
     }
     
-    //    let photo: NSDictionary?
-    //
-    //    init(photo: NSDictionary?){
-    //        self.photo = photo
-    //    }
-    //
-    //    func getId() -> String?{
-    //        return photo?.valueForKey("id") as? String
-    //    }
-    //    func getFarm() -> Int?{
-    //        return photo?.valueForKey("farm") as? Int
-    //    }
-    //    func isFamily() -> Bool?{
-    //        return photo?.valueForKey("isfamily") as? Bool
-    //    }
-    //
-    //    func isFriend() -> Bool?{
-    //        return photo?.valueForKey("isfriend") as? Bool
-    //    }
-    //    func isPublic() -> Bool?{
-    //        return photo?.valueForKey("ispublic") as? Bool
-    //    }
-    //    func getOwner() -> String?{
-    //        return photo?.valueForKey("owner") as? String
-    //    }
-    //
-    //    func getSecret() -> String?{
-    //        return photo?.valueForKey("secret") as? String
-    //    }
-    //    func getServer() -> String?{
-    //        return photo?.valueForKey("server") as? String
-    //    }
-    //    func getTitle() -> String?{
-    //        return photo?.valueForKey("title") as? String
-    //    }
-    
     //step.6 the two argumens init method
-    init(photo: NSDictionary?, latitude: Double, longitude:Double, context: NSManagedObjectContext){
+    init(photo: NSDictionary?,context: NSManagedObjectContext){
         
         //core data
-        let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: context)!
+        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)!
         super.init(entity: entity, insertIntoManagedObjectContext: context)
         
         //dictionary
@@ -96,10 +60,9 @@ class Photo: NSManagedObject {
             farm = val.valueForKey(Keys.Farm) as? Int
             server = val.valueForKey(Keys.Server) as? String
             title = val.valueForKey(Keys.Title) as? String
-            isFriend = val.valueForKey(Keys.IsFriend) as? Bool
-            isPublic = val.valueForKey(Keys.IsPublic) as? Bool
-            isFamily = val.valueForKey(Keys.IsFamily) as? Bool
-            pin = Pin(lat: latitude, lng: longitude, context: context)
+            isFriend = val.valueForKey(Keys.IsFriend) as? NSNumber
+            isPublic = val.valueForKey(Keys.IsPublic) as? NSNumber
+            isFamily = val.valueForKey(Keys.IsFamily) as? NSNumber
         }
     }
 }

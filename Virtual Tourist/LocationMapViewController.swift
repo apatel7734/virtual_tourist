@@ -134,7 +134,7 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
         
         mapView.deselectAnnotation(view.annotation, animated: false)
         var photoAlbumVC = self.storyboard?.instantiateViewControllerWithIdentifier("photoalbumvc") as! PhotoAlbumViewController
-        photoAlbumVC.annotation = view.annotation
+        photoAlbumVC.myAnnotation = view.annotation as? MyAnnotation
         self.navigationController?.pushViewController(photoAlbumVC, animated: true)
     }
     

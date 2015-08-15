@@ -8,17 +8,17 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate{
     
-    var annotation: MKAnnotation?
-    var pin: Pin?
+    var myAnnotation: MyAnnotation?
     
     @IBOutlet weak var photoCollectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var newCollectionBtn: UIButton!
     
-    var photos: [Photo]?
+    var phts = [Photo]()
     var totalPages = 1
     var currentPage = 0
     
@@ -26,13 +26,13 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        if let pin = annotation{
-            mapView.addAnnotation(pin)
-            mapView.centerCoordinate = pin.coordinate
+        if let annotation = myAnnotation{
+            mapView.addAnnotation(annotation)
+            mapView.centerCoordinate = annotation.coordinate
             
             //get photos for location
-            var lat = "\(pin.coordinate.latitude)"
-            var lng = "\(pin.coordinate.longitude)"
+            var lat = "\(annotation.coordinate.latitude)"
+            var lng = "\(annotation.coordinate.longitude)"
             //fetch flicker images
             fetchFlickrImages(lat, lng: lng)
         }
@@ -42,10 +42,10 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     @IBAction func onNewCollectionClicked(sender: UIButton) {
-        if let pin = annotation{
+        if let annotation = myAnnotation{
             newCollectionBtn.enabled = false
-            var lat = "\(pin.coordinate.latitude)"
-            var lng = "\(pin.coordinate.longitude)"
+            var lat = "\(annotation.coordinate.latitude)"
+            var lng = "\(annotation.coordinate.longitude)"
             fetchFlickrImages(lat, lng: lng)
         }
     }
@@ -77,11 +77,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let num = photos?.count {
-            return num
-        }else{
-            return 0
-        }
+        return phts.count
     }
     
     func reloadCollectionView(){
@@ -92,13 +88,21 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     func fetchFlickrImages(lat: String, lng: String){
         //call network client to fetch images
-        self.photos?.removeAll(keepCapacity: true)
-        reloadCollectionView()
         var nextPage = currentPage + 1
         if (nextPage <= totalPages) && (nextPage > 0 ){
             FlickerClient.sharedInstance().getPhotosForLocation(lat , lng: lng, pageNum: nextPage) { (photos, error) -> Void in
                 if(error == nil){
-                    self.photos = photos?.photos
+                    let arrPhotos = photos?.photos
+                    println("New Photos count = \(arrPhotos?.count)")
+                    if let array = arrPhotos{
+                        self.phts.removeAll(keepCapacity: false)
+                        for object in array{
+                            var photoTobeSaved = Photo(photo: object as? NSDictionary, context: self.sharedContext)
+                            photoTobeSaved.pin = self.myAnnotation?.pin
+                            self.phts.append(photoTobeSaved)
+                        }
+                    }
+                    
                     if let pages = photos?.pages{
                         self.totalPages = pages
                     }
@@ -106,15 +110,24 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
                         self.currentPage = page
                     }
                     self.reloadCollectionView()
-                    //                    self.newCollectionBtn.enabled = true
+                    
                 }else{
                     //display error alert
+                    println("Error # 119")
                 }
             }
         }else{
             //last page display some message
+            var alertView = UIAlertView(title: "Empty Result", message: "No more images available.", delegate: nil, cancelButtonTitle: "OK")
+            alertView.show();
         }
     }
+    
+    //core data convenience
+    lazy var sharedContext: NSManagedObjectContext = {
+        return CoreDataStackManager.sharedInstance().managedObjectContext!
+        }()
+    
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         var photoCell = collectionView.dequeueReusableCellWithReuseIdentifier("photocell", forIndexPath: indexPath) as! PhotoCell
@@ -128,8 +141,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         cell.progressView.layer.cornerRadius = 5.0
         cell.progressView.backgroundColor = UIColor.darkGrayColor()
         
-        var photo = self.photos?[ip.row]
-        
+        var photo = self.phts[ip.row]
         cell.progressView.hidden = false
         cell.photoImgView.image = nil
         var url = getPhotoUrl(photo)

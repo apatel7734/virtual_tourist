@@ -8,19 +8,12 @@
 
 import Foundation
 import OAuthSwift
-/*
-https://api.flickr.com/services/rest/?method=flickr.photos.geo.photosForLocation&api_key=0cff1ea87d47aab1baf2f0214575bb73&lat=37.8064754&lon=-122.2717999&format=json&nojsoncallback=1&auth_token=72157651649499263-2cb4c525582386ec&api_sig=99cdb5c9390968d41d0d2889a8b7c1e9
-
-//search API
-
-URL: https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=8cb9b18ff2c7e69d920b7ce056169306&lat=37.773972&lon=-122.2697222&format=json
-
-*/
 
 class FlickerClient: NetworkClient {
     
     func getPhotosForLocation(lat: String, lng: String, pageNum: Int,completionHandler: (photos: Photos?,error: NSError?) -> Void){
         
+        println("fetchFlickrImages.. pageNum = \(pageNum)")
         let parameters : [String: String] = [
             Parameters.method : Methods.SearchPhotos,
             Parameters.apiKey:Constants.Consumerkey,
@@ -33,7 +26,7 @@ class FlickerClient: NetworkClient {
         ]
         
         var url = NSURL(string: Constants.BaseUrl + escapedParameters(parameters))!
-        
+        println("fetchFlickrImages.. url = \(url)")
         //step 1. Make Request from URL
         let request = NSMutableURLRequest(URL: url)
         

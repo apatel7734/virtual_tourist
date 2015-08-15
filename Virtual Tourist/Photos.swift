@@ -15,7 +15,7 @@ class Photos{
     var total: Int?
     var pages: Int?
     var perPage: Int?
-    var photos = [Photo]()
+    var photos: NSArray?
     
     init(jsonDict: NSDictionary?){
         parseDcitionary(jsonDict)
@@ -24,22 +24,14 @@ class Photos{
     func parseDcitionary(dict: NSDictionary?){
         if let result = dict {
              stat = result.valueForKey("stat") as? String
-            let photos = result.valueForKey("photos") as? NSDictionary
-            if let val = photos{
+            let dictPhotos = result.valueForKey("photos") as? NSDictionary
+            if let val = dictPhotos{
                 page = val.valueForKey("page") as? Int
                 total = val.valueForKey("total") as? Int
                 pages = val.valueForKey("pages") as? Int
                 perPage = val.valueForKey("perpage") as? Int
-                let photoList = val.valueForKey("photo") as? NSArray
-                if let array = photoList{
-                    for photo in array{
-                        //TODO: create photo here
-//                        self.photos.append(Photo(photo: photo as? NSDictionary))
-                    }
-                }
+                photos = val.valueForKey("photo") as? NSArray
             }
-        }else{
-            println("Empty dictionary")
         }
     }
 }
