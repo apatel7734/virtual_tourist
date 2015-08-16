@@ -54,4 +54,9 @@ class ImageConfig {
         
         return task
     }
+    
+    
+    struct Caches {
+        static let imageCache = ImageCache()
+    }
 }

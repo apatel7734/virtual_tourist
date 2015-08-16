@@ -12,13 +12,11 @@ import CoreData
 
 class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate{
     
-    var myAnnotation: MyAnnotation?
-    
     @IBOutlet weak var photoCollectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var newCollectionBtn: UIButton!
     
-    var phts = [Photo]()
+    var myAnnotation: MyAnnotation?
     var totalPages = 1
     var currentPage = 0
     
@@ -33,8 +31,13 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             //get photos for location
             var lat = "\(annotation.coordinate.latitude)"
             var lng = "\(annotation.coordinate.longitude)"
-            //fetch flicker images
-            fetchFlickrImages(lat, lng: lng)
+            if(self.myAnnotation?.pin?.photos.count > 0 ){
+                println("Photos count = \(self.myAnnotation?.pin?.photos.count)")
+            }else{
+                //fetch flicker images
+                fetchFlickrImages(lat, lng: lng)
+            }
+            
         }
         
         photoCollectionView.dataSource = self
@@ -77,7 +80,12 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return phts.count
+
+        if let num = myAnnotation?.pin?.photos.count{
+            return num
+        }else{
+            return 0
+        }
     }
     
     func reloadCollectionView(){
@@ -95,11 +103,16 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
                     let arrPhotos = photos?.photos
                     println("New Photos count = \(arrPhotos?.count)")
                     if let array = arrPhotos{
-                        self.phts.removeAll(keepCapacity: false)
+                        var annotationPhotos =  self.myAnnotation?.pin?.photos
+                        if( annotationPhotos != nil && annotationPhotos?.count > 0){
+                            //                            println("Removng all photos : annotationPhotos = \(annotationPhotos)")
+                            // self.myAnnotation?.pin?.photos?.removeAll(keepCapacity: false)
+                        }
+                        var locPhotos = [Photo]()
                         for object in array{
                             var photoTobeSaved = Photo(photo: object as? NSDictionary, context: self.sharedContext)
                             photoTobeSaved.pin = self.myAnnotation?.pin
-                            self.phts.append(photoTobeSaved)
+                            locPhotos.append(photoTobeSaved)
                         }
                     }
                     
@@ -111,14 +124,25 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
                     }
                     self.reloadCollectionView()
                     
+                    // Save the context
+                    self.saveContext()
+                    
                 }else{
                     //display error alert
-                    println("Error # 119")
+                    if let description = error?.localizedDescription{
+                        self.showAlert("Error!", message: description)
+                    }
                 }
             }
         }else{
             //last page display some message
-            var alertView = UIAlertView(title: "Empty Result", message: "No more images available.", delegate: nil, cancelButtonTitle: "OK")
+            showAlert("Empty result returned.", message: "No more images available for this location.")
+        }
+    }
+    
+    func showAlert(title: String, message: String){
+        var alertView = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "OK")
+        dispatch_async(dispatch_get_main_queue()){
             alertView.show();
         }
     }
@@ -127,6 +151,11 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     lazy var sharedContext: NSManagedObjectContext = {
         return CoreDataStackManager.sharedInstance().managedObjectContext!
         }()
+    
+    
+    func saveContext() {
+        CoreDataStackManager.sharedInstance().saveContext()
+    }
     
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -141,24 +170,36 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         cell.progressView.layer.cornerRadius = 5.0
         cell.progressView.backgroundColor = UIColor.darkGrayColor()
         
-        var photo = self.phts[ip.row]
+        var photo = self.myAnnotation?.pin?.photos[ip.row]
         cell.progressView.hidden = false
         cell.photoImgView.image = nil
-        var url = getPhotoUrl(photo)
-        if let imgUrl = url{
-            loadImage(imgUrl, imageView: cell.photoImgView, progressView: cell.progressView)
+        if(photo!.image != nil){
+            println("Cached Image");
+            cell.photoImgView.image = photo!.image
+            cell.progressView.hidden = true
+        }else{
+            println("Not Cached Image");
+            loadImage(cell.photoImgView, progressView: cell.progressView, photo: photo!)
         }
     }
     
-    func loadImage(urlString:String,imageView: UIImageView, progressView: UIView){
-        var imgURL: NSURL = NSURL(string: urlString)!
-        let request: NSURLRequest = NSURLRequest(URL: imgURL)
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
-            if error == nil {
-                imageView.image = UIImage(data: data)
-                progressView.hidden = true
-            }
-        })
+    func loadImage(imageView: UIImageView, progressView: UIView, photo: Photo){
+        
+        var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(photo)
+        if let photoUrl = photoUrl{
+            var photoNSURL: NSURL = NSURL(string: photoUrl)!
+            
+            let request: NSURLRequest = NSURLRequest(URL: photoNSURL)
+            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
+                if error == nil {
+                    var photoImage = UIImage(data: data);
+                    imageView.image = photoImage
+                    progressView.hidden = true
+                    //update model so image is saved
+                    photo.image = photoImage;
+                }
+            })
+        }
     }
     
     func getPhotoUrl(photo: Photo?) -> String?{

@@ -20,7 +20,7 @@ class Pin: NSManagedObject {
     //step.4 make @NSManaged proeprties
     @NSManaged var latitude: NSNumber?
     @NSManaged var longitude: NSNumber?
-    @NSManaged var photos: [Photo]?
+    @NSManaged var photos: [Photo]
     
     //step.4 default initializer
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {

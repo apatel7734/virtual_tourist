@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+
 //step.1 import coredata
 import CoreData
 
@@ -63,6 +65,18 @@ class Photo: NSManagedObject {
             isFriend = val.valueForKey(Keys.IsFriend) as? NSNumber
             isPublic = val.valueForKey(Keys.IsPublic) as? NSNumber
             isFamily = val.valueForKey(Keys.IsFamily) as? NSNumber
+        }
+    }
+    
+    var image: UIImage? {
+        get {
+            var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(self);
+            return ImageConfig.Caches.imageCache.retrieveImagewithIdentifier(photoUrl)
+        }
+        
+        set {
+            var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(self);
+            ImageConfig.Caches.imageCache.storeImage(image, withIdentifier: photoUrl!)
         }
     }
 }

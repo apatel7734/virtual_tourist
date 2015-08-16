@@ -15,7 +15,7 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     
     //    var pins = [AnyObject]()
-    var pins: [Pin] = [Pin]()
+    var pins = [Pin]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
