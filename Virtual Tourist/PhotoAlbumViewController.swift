@@ -32,12 +32,13 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             var lat = "\(annotation.coordinate.latitude)"
             var lng = "\(annotation.coordinate.longitude)"
             if(self.myAnnotation?.pin?.photos.count > 0 ){
-                println("Photos count = \(self.myAnnotation?.pin?.photos.count)")
+                println("Offline Photos count = \(self.myAnnotation?.pin?.photos.count)")
             }else{
                 //fetch flicker images
-                fetchFlickrImages(lat, lng: lng)
+                fetchNewFlickrImages(lat, lng: lng)
             }
-            
+            //disable button
+            self.newCollectionBtn.enabled = false
         }
         
         photoCollectionView.dataSource = self
@@ -45,11 +46,13 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     @IBAction func onNewCollectionClicked(sender: UIButton) {
+        println("onNewCollectionClicked")
         if let annotation = myAnnotation{
-            newCollectionBtn.enabled = false
+            self.newCollectionBtn.enabled = false
             var lat = "\(annotation.coordinate.latitude)"
             var lng = "\(annotation.coordinate.longitude)"
-            fetchFlickrImages(lat, lng: lng)
+            
+            fetchNewFlickrImages(lat, lng: lng)
         }
     }
     
@@ -80,7 +83,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-
+        
         if let num = myAnnotation?.pin?.photos.count{
             return num
         }else{
@@ -94,49 +97,83 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     
-    func fetchFlickrImages(lat: String, lng: String){
-        //call network client to fetch images
-        var nextPage = currentPage + 1
-        if (nextPage <= totalPages) && (nextPage > 0 ){
-            FlickerClient.sharedInstance().getPhotosForLocation(lat , lng: lng, pageNum: nextPage) { (photos, error) -> Void in
-                if(error == nil){
-                    let arrPhotos = photos?.photos
-                    println("New Photos count = \(arrPhotos?.count)")
-                    if let array = arrPhotos{
-                        var annotationPhotos =  self.myAnnotation?.pin?.photos
-                        if( annotationPhotos != nil && annotationPhotos?.count > 0){
-                            //                            println("Removng all photos : annotationPhotos = \(annotationPhotos)")
-                            // self.myAnnotation?.pin?.photos?.removeAll(keepCapacity: false)
-                        }
-                        var locPhotos = [Photo]()
-                        for object in array{
-                            var photoTobeSaved = Photo(photo: object as? NSDictionary, context: self.sharedContext)
-                            photoTobeSaved.pin = self.myAnnotation?.pin
-                            locPhotos.append(photoTobeSaved)
-                        }
-                    }
-                    
-                    if let pages = photos?.pages{
-                        self.totalPages = pages
-                    }
-                    if let page = photos?.page{
-                        self.currentPage = page
-                    }
-                    self.reloadCollectionView()
-                    
-                    // Save the context
-                    self.saveContext()
-                    
-                }else{
-                    //display error alert
-                    if let description = error?.localizedDescription{
-                        self.showAlert("Error!", message: description)
+    
+    func clearExistingPhotosfromPin(){
+        
+        var photosToRemove = self.myAnnotation?.pin?.photos
+        if let photosToRemove = photosToRemove{
+            for photo in photosToRemove{
+                sharedContext.deleteObject(photo)
+            }
+        }
+        CoreDataStackManager.sharedInstance().saveContext()
+    }
+    
+    func removePhotoFromPin(index: Int){
+        var photoToRemove = self.myAnnotation?.pin?.photos[index]
+        if let photoToRemove = photoToRemove{
+            sharedContext.deleteObject(photoToRemove)
+        }
+        CoreDataStackManager.sharedInstance().saveContext()
+    }
+    
+    func fetchAndDisplayFlickrImages(lat: String, lng:String, pageNum: Int){
+        FlickerClient.sharedInstance().getPhotosForLocation(lat , lng: lng, pageNum: pageNum) { (photos, error) -> Void in
+            if(error == nil){
+                
+                let newPhotos = photos?.photos
+                
+                if newPhotos?.count > 0{
+                    self.clearExistingPhotosfromPin()
+                    println("Existing photos removed count : \(self.myAnnotation?.pin?.photos.count)")
+                }
+                if let newPhotos = newPhotos{
+                    for photo in newPhotos{
+                        var photoTobeSaved = Photo(photo: photo as? NSDictionary, context: self.sharedContext)
+                        photoTobeSaved.pin = self.myAnnotation?.pin
                     }
                 }
+                
+                if let pages = photos?.pages{
+                    self.totalPages = pages
+                }
+                if let page = photos?.page{
+                    self.currentPage = page
+                }
+                self.reloadCollectionView()
+                
+                // Save the context
+                self.saveContext()
+                
+            }else{
+                //display error alert
+                if let description = error?.localizedDescription{
+                    self.showAlert("Error!", message: description)
+                    self.newCollectionBtn.enabled = false
+                }
             }
+        }
+    }
+    
+    
+    func getNextPageNumber() -> Int{
+        var nextPage = currentPage + 1
+        if (nextPage <= totalPages) && (nextPage > 0 ){
+            return nextPage
+        }else{
+            return -1;
+        }
+    }
+    
+    func fetchNewFlickrImages(lat: String, lng: String){
+        
+        let nextPageNumber = self.getNextPageNumber()
+        if (nextPageNumber >= 0){
+            fetchAndDisplayFlickrImages(lat, lng: lng, pageNum: nextPageNumber)
         }else{
             //last page display some message
             showAlert("Empty result returned.", message: "No more images available for this location.")
+            self.newCollectionBtn.enabled = false
         }
     }
     
@@ -157,6 +194,35 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         CoreDataStackManager.sharedInstance().saveContext()
     }
     
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        println("Item selected : \(indexPath.row)")
+        var selectedPhotoCell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCell
+        self.showAlertAction(indexPath)
+    }
+    
+    func showAlertAction(indexPath: NSIndexPath){
+        var alert = UIAlertController(title: "delete image.", message: "Are you sure?", preferredStyle: UIAlertControllerStyle.Alert)
+        
+        //cancel button
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+        //OK button
+        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { action in
+            switch action.style{
+                
+            case .Default:
+                println("Default = \(indexPath.row)")
+                self.removePhotoFromPin(indexPath.row)
+                self.reloadCollectionView()
+                
+            case .Cancel:
+                println("Cancel")
+                
+            case .Destructive:
+                println("Destructive")
+            }
+        }))
+    }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         var photoCell = collectionView.dequeueReusableCellWithReuseIdentifier("photocell", forIndexPath: indexPath) as! PhotoCell
@@ -173,45 +239,21 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         var photo = self.myAnnotation?.pin?.photos[ip.row]
         cell.progressView.hidden = false
         cell.photoImgView.image = nil
-        if(photo!.image != nil){
-            println("Cached Image");
-            cell.photoImgView.image = photo!.image
-            cell.progressView.hidden = true
-        }else{
-            println("Not Cached Image");
-            loadImage(cell.photoImgView, progressView: cell.progressView, photo: photo!)
-        }
+        loadImage(cell.photoImgView, progressView: cell.progressView, photo: photo!)
     }
     
     func loadImage(imageView: UIImageView, progressView: UIView, photo: Photo){
-        
         var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(photo)
         if let photoUrl = photoUrl{
             var photoNSURL: NSURL = NSURL(string: photoUrl)!
-            
             let request: NSURLRequest = NSURLRequest(URL: photoNSURL)
             NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
                 if error == nil {
                     var photoImage = UIImage(data: data);
                     imageView.image = photoImage
                     progressView.hidden = true
-                    //update model so image is saved
-                    photo.image = photoImage;
                 }
             })
         }
     }
-    
-    func getPhotoUrl(photo: Photo?) -> String?{
-        let farmId = photo?.farm
-        let server = photo?.server
-        let id = photo?.id
-        let secret = photo?.secret
-        if(farmId !=  nil && server != nil && id != nil && secret != nil){
-            var urlStr = "https://farm\(farmId!).staticflickr.com/\(server!)/\(id!)_\(secret!).jpg"
-            return urlStr
-        }
-        return nil
-    }
-    
 }

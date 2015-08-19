@@ -11,7 +11,7 @@ import OAuthSwift
 
 class FlickerClient: NetworkClient {
     
-    func getPhotosForLocation(lat: String, lng: String, pageNum: Int,completionHandler: (photos: Photos?,error: NSError?) -> Void){
+    func getPhotosForLocation(lat: String, lng: String, pageNum: Int,completionHandler: (returnedPhotos: Photos?,error: NSError?) -> Void){
         
         println("fetchFlickrImages.. pageNum = \(pageNum)")
         let parameters : [String: String] = [
@@ -44,18 +44,18 @@ class FlickerClient: NetworkClient {
             if(error != nil){
                 //step 6. handle error.
                 //send error creating dataTask
-                completionHandler(photos: nil, error: error)
+                completionHandler(returnedPhotos: nil, error: error)
             }else{
                 //step 7. we got response parse it.
                 self.parseJson(data, completionHandler: { (result, error) -> Void in
                     if(error != nil){
                         //send parsing error.
-                        completionHandler(photos: nil, error: error)
+                        completionHandler(returnedPhotos: nil, error: error)
                     }else{
                         //send parsed result with photos
                         let dictResult = result as? NSDictionary
                         let photos = Photos(jsonDict: dictResult)
-                        completionHandler(photos: photos, error: nil)
+                        completionHandler(returnedPhotos: photos, error: nil)
                     }
                 })
                 
