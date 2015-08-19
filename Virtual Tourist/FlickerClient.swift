@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import OAuthSwift
 
 class FlickerClient: NetworkClient {
     

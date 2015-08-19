@@ -15,7 +15,6 @@
 		09AC0BF01B5DB5DA000849C4 /* MyAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09AC0BEF1B5DB5DA000849C4 /* MyAnnotation.swift */; };
 		09F39EDC1B54858E002EE10F /* Photos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F39EDB1B54858E002EE10F /* Photos.swift */; };
 		09F39EDE1B5485C8002EE10F /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F39EDD1B5485C8002EE10F /* Photo.swift */; };
-		27BC287AB466CA8B17B29D49 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66D329BDD85DE58EA97A8301 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7582545D1B00763D00205F85 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7582545C1B00763D00205F85 /* AppDelegate.swift */; };
 		7582545F1B00763D00205F85 /* LocationMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7582545E1B00763D00205F85 /* LocationMapViewController.swift */; };
 		758254621B00763D00205F85 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 758254601B00763D00205F85 /* Main.storyboard */; };
@@ -76,7 +75,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				27BC287AB466CA8B17B29D49 /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,12 +209,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 758254761B00763D00205F85 /* Build configuration list for PBXNativeTarget "Virtual Tourist" */;
 			buildPhases = (
-				49B36205484ADCB5F1817AB0 /* Check Pods Manifest.lock */,
 				758254531B00763D00205F85 /* Sources */,
 				758254541B00763D00205F85 /* Frameworks */,
 				758254551B00763D00205F85 /* Resources */,
-				555FA000BEA33294D0A35672 /* Copy Pods Resources */,
-				A955AC923EE314FF9CFEBD99 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -302,54 +297,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		49B36205484ADCB5F1817AB0 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		555FA000BEA33294D0A35672 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A955AC923EE314FF9CFEBD99 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		758254531B00763D00205F85 /* Sources */ = {
@@ -495,7 +442,6 @@
 		};
 		758254771B00763D00205F85 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 24BC001D278EA585515B4337 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -509,7 +455,6 @@
 		};
 		758254781B00763D00205F85 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 246F2F998450AC225D9EA2BA /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
