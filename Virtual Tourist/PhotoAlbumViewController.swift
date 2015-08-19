@@ -28,17 +28,20 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             mapView.addAnnotation(annotation)
             mapView.centerCoordinate = annotation.coordinate
             
+            //disable button
+            self.newCollectionBtn.enabled = false
+            
             //get photos for location
             var lat = "\(annotation.coordinate.latitude)"
             var lng = "\(annotation.coordinate.longitude)"
             if(self.myAnnotation?.pin?.photos.count > 0 ){
-                println("Offline Photos count = \(self.myAnnotation?.pin?.photos.count)")
+                //photos are available offline. display offline picture.
+                println("Enable Button...")
+                self.newCollectionBtn.enabled = true
             }else{
                 //fetch flicker images
                 fetchNewFlickrImages(lat, lng: lng)
             }
-            //disable button
-            self.newCollectionBtn.enabled = false
         }
         
         photoCollectionView.dataSource = self
@@ -94,6 +97,10 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     func reloadCollectionView(){
         dispatch_async(dispatch_get_main_queue()) {
             self.photoCollectionView.reloadData()
+        }
+        
+        dispatch_async(dispatch_get_main_queue()){
+            self.newCollectionBtn.enabled = true
         }
     }
     
@@ -166,14 +173,13 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func fetchNewFlickrImages(lat: String, lng: String){
-        
+        self.newCollectionBtn.enabled = false
         let nextPageNumber = self.getNextPageNumber()
         if (nextPageNumber >= 0){
             fetchAndDisplayFlickrImages(lat, lng: lng, pageNum: nextPageNumber)
         }else{
             //last page display some message
             showAlert("Empty result returned.", message: "No more images available for this location.")
-            self.newCollectionBtn.enabled = false
         }
     }
     

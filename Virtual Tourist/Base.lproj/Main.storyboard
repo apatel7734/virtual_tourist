@@ -57,7 +57,7 @@
                                 </constraints>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="LRW-YX-5a1">
-                                <rect key="frame" x="0.0" y="151" width="600" height="449"/>
+                                <rect key="frame" x="0.0" y="151" width="600" height="399"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="67U-wy-LTI">
                                     <size key="itemSize" width="151" height="138"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -131,11 +131,17 @@
                             <constraint firstItem="1DW-dx-duw" firstAttribute="top" secondItem="LRW-YX-5a1" secondAttribute="bottom" id="fif-Yx-RCp"/>
                             <constraint firstAttribute="trailingMargin" secondItem="cKE-28-RAu" secondAttribute="trailing" constant="-16" id="gGf-HQ-hd4"/>
                             <constraint firstItem="VSr-dC-If9" firstAttribute="leading" secondItem="IOw-93-mX0" secondAttribute="leadingMargin" constant="-16" id="mmV-cu-gtK"/>
+                            <constraint firstItem="cKE-28-RAu" firstAttribute="top" secondItem="LRW-YX-5a1" secondAttribute="bottom" id="nJ8-fe-x2L"/>
                             <constraint firstItem="LRW-YX-5a1" firstAttribute="top" secondItem="VSr-dC-If9" secondAttribute="bottom" constant="-4" id="uqk-IK-rLt"/>
                             <constraint firstAttribute="trailingMargin" secondItem="VSr-dC-If9" secondAttribute="trailing" constant="-16" id="vIb-xm-gFM"/>
                             <constraint firstItem="VSr-dC-If9" firstAttribute="top" secondItem="IOw-93-mX0" secondAttribute="topMargin" constant="64" id="wHe-eM-xNw"/>
                             <constraint firstItem="cKE-28-RAu" firstAttribute="leading" secondItem="IOw-93-mX0" secondAttribute="leadingMargin" constant="-16" id="xfZ-SR-noX"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="fif-Yx-RCp"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="VSr-dC-If9" id="lQc-Ee-TCG"/>
