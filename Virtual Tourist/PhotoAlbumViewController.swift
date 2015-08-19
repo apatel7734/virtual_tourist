@@ -245,21 +245,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         var photo = self.myAnnotation?.pin?.photos[ip.row]
         cell.progressView.hidden = false
         cell.photoImgView.image = nil
-        loadImage(cell.photoImgView, progressView: cell.progressView, photo: photo!)
+        ImageConfig.sharedInstance().loadImage(cell.photoImgView, progressView: cell.progressView, photo: photo!)
     }
     
-    func loadImage(imageView: UIImageView, progressView: UIView, photo: Photo){
-        var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(photo)
-        if let photoUrl = photoUrl{
-            var photoNSURL: NSURL = NSURL(string: photoUrl)!
-            let request: NSURLRequest = NSURLRequest(URL: photoNSURL)
-            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
-                if error == nil {
-                    var photoImage = UIImage(data: data);
-                    imageView.image = photoImage
-                    progressView.hidden = true
-                }
-            })
-        }
-    }
+
 }
