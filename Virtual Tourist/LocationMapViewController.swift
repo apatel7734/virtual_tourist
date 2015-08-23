@@ -89,7 +89,7 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
     func addLongPressGestureToMapView(){
         var longPressGesture = UILongPressGestureRecognizer(target: self, action: "handleLongPress:")
         longPressGesture.minimumPressDuration = 1.0
-        self.mapView.addGestureRecognizer(longPressGesture)
+        mapView.addGestureRecognizer(longPressGesture)
     }
     
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
@@ -100,7 +100,7 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
     }
     //save pin to .Documents file directory
     func addNewPin(pin: Pin){
-        self.pins.append(pin)
+        pins.append(pin)
         //save the data
         CoreDataStackManager.sharedInstance().saveContext()
     }
@@ -110,8 +110,8 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
         if gestureRecognizer.state == UIGestureRecognizerState.Ended{
             return
         }
-        var touchPoint: CGPoint = gestureRecognizer.locationInView(self.mapView)
-        var touchMapCoord: CLLocationCoordinate2D  = self.mapView.convertPoint(touchPoint, toCoordinateFromView: self.mapView)
+        var touchPoint: CGPoint = gestureRecognizer.locationInView(mapView)
+        var touchMapCoord: CLLocationCoordinate2D  = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
         addAnnotation(touchMapCoord)
     }
     
@@ -119,7 +119,7 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
     func addAnnotation(touchCoord: CLLocationCoordinate2D){
         let pin = Pin(lat: touchCoord.latitude, lng: touchCoord.longitude, context: sharedConext)
         var annotation = MyAnnotation(pin: pin)
-        self.mapView.addAnnotation(annotation)
+        mapView.addAnnotation(annotation)
         //save pin
         addNewPin(pin)
     }
@@ -127,15 +127,15 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
     
     func addMyAnnotation(pin: Pin){
         var annotation = MyAnnotation(pin: pin)
-        self.mapView.addAnnotation(annotation)
+        mapView.addAnnotation(annotation)
     }
     
     func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
         
         mapView.deselectAnnotation(view.annotation, animated: false)
-        var photoAlbumVC = self.storyboard?.instantiateViewControllerWithIdentifier("photoalbumvc") as! PhotoAlbumViewController
+        var photoAlbumVC = storyboard?.instantiateViewControllerWithIdentifier("photoalbumvc") as! PhotoAlbumViewController
         photoAlbumVC.myAnnotation = view.annotation as? MyAnnotation
-        self.navigationController?.pushViewController(photoAlbumVC, animated: true)
+        navigationController?.pushViewController(photoAlbumVC, animated: true)
     }
     
     
