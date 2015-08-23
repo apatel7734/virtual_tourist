@@ -68,15 +68,16 @@ class Photo: NSManagedObject {
         }
     }
     
-    var image: UIImage? {
+    var photoImage: UIImage? {
         get {
-            var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(self);
-            return ImageConfig.Caches.imageCache.retrieveImagewithIdentifier(photoUrl)
+            var photoUrl = ImageConfig.sharedInstance().getPhotoPath(self);
+            var image = ImageConfig.Caches.imageCache.retrieveImagewithIdentifier(photoUrl)
+            return image
         }
         
         set {
-            var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(self);
-            ImageConfig.Caches.imageCache.storeImage(image, withIdentifier: photoUrl!)
+            var photoUrl = ImageConfig.sharedInstance().getPhotoPath(self);
+            ImageConfig.Caches.imageCache.storeImage(newValue, withIdentifier: photoUrl!)
         }
     }
 }

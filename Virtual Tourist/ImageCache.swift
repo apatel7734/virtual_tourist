@@ -41,7 +41,7 @@ class ImageCache {
     //store image in the memory and file
     func storeImage(image: UIImage? , withIdentifier identifier:String){
         let path = pathForIdentifier(identifier)
-
+        
         if image == nil{
             inMemoryCache.removeObjectForKey(path)
             NSFileManager.defaultManager().removeItemAtPath(path, error: nil)
@@ -56,7 +56,8 @@ class ImageCache {
         data.writeToFile(path, atomically: true)
     }
     
-    //return the documents directory path from string path
+    // MARK: - Helper
+    
     func pathForIdentifier(identifier: String) -> String {
         let documentsDirectoryURL: NSURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as! NSURL
         let fullURL = documentsDirectoryURL.URLByAppendingPathComponent(identifier)

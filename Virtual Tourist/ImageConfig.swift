@@ -32,6 +32,18 @@ class ImageConfig {
         return nil
     }
     
+    //getPhotoUrl
+    func getPhotoPath(photo: Photo?) -> String?{
+        let farmId = photo?.farm
+        let server = photo?.server
+        let id = photo?.id
+        let secret = photo?.secret
+        if (secret != nil){
+            return secret
+        }
+        return nil
+    }
+    
     func taskForImageWith(photo: Photo?, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) -> NSURLSessionTask {
         
         var photoUrl = getPhotoUrl(photo)
@@ -40,7 +52,6 @@ class ImageConfig {
         if let filePath = photoUrl{
             url = NSURL(string: filePath)
         }
-        println(url)
         let request = NSURLRequest(URL: url!)
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
@@ -60,18 +71,34 @@ class ImageConfig {
         static let imageCache = ImageCache()
     }
     
+    /*
     func loadImage(imageView: UIImageView, progressView: UIView, photo: Photo){
-        var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(photo)
-        if let photoUrl = photoUrl{
-            var photoNSURL: NSURL = NSURL(string: photoUrl)!
-            let request: NSURLRequest = NSURLRequest(URL: photoNSURL)
-            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
-                if error == nil {
-                    var photoImage = UIImage(data: data);
-                    imageView.image = photoImage
-                    progressView.hidden = true
-                }
-            })
+        if(photo.photoImage != nil){
+            println("Cached Image found....")
+            dispatch_async(dispatch_get_main_queue()) {
+                imageView.image = photo.photoImage
+                progressView.hidden = true
+            }
+        }else{
+            println("Cached Image Not found....")
+            var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(photo)
+            if let photoUrl = photoUrl{
+                var photoNSURL: NSURL = NSURL(string: photoUrl)!
+                let request: NSURLRequest = NSURLRequest(URL: photoNSURL)
+                NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
+                    
+                    if error == nil {
+                        var photoImage = UIImage(data: data);
+                        //cache image.
+                        photo.photoImage = photoImage
+                        dispatch_async(dispatch_get_main_queue()) {
+                            imageView.image = photoImage
+                            progressView.hidden = true
+                        }
+                    }
+                })
+            }
         }
     }
+    */
 }

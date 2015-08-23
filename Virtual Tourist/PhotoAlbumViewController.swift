@@ -36,7 +36,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             var lng = "\(annotation.coordinate.longitude)"
             if(self.myAnnotation?.pin?.photos.count > 0 ){
                 //photos are available offline. display offline picture.
-                println("Enable Button...")
                 self.newCollectionBtn.enabled = true
             }else{
                 //fetch flicker images
@@ -49,7 +48,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     @IBAction func onNewCollectionClicked(sender: UIButton) {
-        println("onNewCollectionClicked")
         if let annotation = myAnnotation{
             self.newCollectionBtn.enabled = false
             var lat = "\(annotation.coordinate.latitude)"
@@ -132,7 +130,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
                 
                 if newPhotos?.count > 0{
                     self.clearExistingPhotosfromPin()
-                    println("Existing photos removed count : \(self.myAnnotation?.pin?.photos.count)")
                 }
                 if let newPhotos = newPhotos{
                     for photo in newPhotos{
@@ -201,7 +198,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        println("Item selected : \(indexPath.row)")
         var selectedPhotoCell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCell
         self.showAlertAction(indexPath)
     }
@@ -217,15 +213,13 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             switch action.style{
                 
             case .Default:
-                println("Default = \(indexPath.row)")
                 self.removePhotoFromPin(indexPath.row)
                 self.reloadCollectionView()
                 
             case .Cancel:
-                println("Cancel")
-                
+                println("Cancel Case")
             case .Destructive:
-                println("Destructive")
+                println("Destructive Case")
             }
         }))
     }
@@ -245,8 +239,37 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         var photo = self.myAnnotation?.pin?.photos[ip.row]
         cell.progressView.hidden = false
         cell.photoImgView.image = nil
-        ImageConfig.sharedInstance().loadImage(cell.photoImgView, progressView: cell.progressView, photo: photo!)
+        
+        if let photo = photo{
+            if(photo.photoImage != nil){
+                cell.photoImgView.image = photo.photoImage
+                cell.progressView.hidden = true
+            }else{
+                var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(photo)
+                
+                if let photoUrl = photoUrl{
+                    var photoNSURL: NSURL = NSURL(string: photoUrl)!
+                    let request: NSURLRequest = NSURLRequest(URL: photoNSURL)
+                    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
+                        if error == nil {
+                            var photoImage = UIImage(data: data);
+                            //cache image.
+                            photo.photoImage = photoImage
+                            
+                            dispatch_async(dispatch_get_main_queue()) {
+                                cell.photoImgView.image = photoImage
+                                cell.progressView.hidden = true
+                            }
+                        }else{
+                            //error downloading images.
+                        }
+                    })
+                }
+            }
+        }
+        
+        //        ImageConfig.sharedInstance().loadImage(cell.photoImgView, progressView: cell.progressView, photo: photo!)
     }
     
-
+    
 }
