@@ -57,12 +57,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         //layout subviews so its cells take up of 1/3 of width.

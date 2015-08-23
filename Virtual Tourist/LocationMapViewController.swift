@@ -34,11 +34,6 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
         pins = fetchAllPins()
         
         for pin in pins{
-            //            var lat = pin.latitude as! Double
-            //            var lng = pin.longitude as! Double
-            //            var coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lng)
-            //            var placeMark = MKPlacemark(coordinate: coordinate, addressDictionary: nil)
-            //            addAnnotationPlacemark(pinPlaceMark)
             addMyAnnotation(pin)
         }
     }
@@ -136,14 +131,6 @@ class LocationMapViewController: UIViewController,MKMapViewDelegate {
         var photoAlbumVC = storyboard?.instantiateViewControllerWithIdentifier("photoalbumvc") as! PhotoAlbumViewController
         photoAlbumVC.myAnnotation = view.annotation as? MyAnnotation
         navigationController?.pushViewController(photoAlbumVC, animated: true)
-    }
-    
-    
-    // MARK: - Navigation
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
     }
     
 }
