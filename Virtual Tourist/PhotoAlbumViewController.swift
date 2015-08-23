@@ -29,14 +29,14 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             mapView.centerCoordinate = annotation.coordinate
             
             //disable button
-            self.newCollectionBtn.enabled = false
+            newCollectionBtn.enabled = false
             
             //get photos for location
             var lat = "\(annotation.coordinate.latitude)"
             var lng = "\(annotation.coordinate.longitude)"
-            if(self.myAnnotation?.pin?.photos.count > 0 ){
+            if(myAnnotation?.pin?.photos.count > 0 ){
                 //photos are available offline. display offline picture.
-                self.newCollectionBtn.enabled = true
+                newCollectionBtn.enabled = true
             }else{
                 //fetch flicker images
                 fetchNewFlickrImages(lat, lng: lng)
@@ -49,7 +49,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     @IBAction func onNewCollectionClicked(sender: UIButton) {
         if let annotation = myAnnotation{
-            self.newCollectionBtn.enabled = false
+            newCollectionBtn.enabled = false
             var lat = "\(annotation.coordinate.latitude)"
             var lng = "\(annotation.coordinate.longitude)"
             
@@ -71,17 +71,11 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         layout.minimumLineSpacing = 1
         layout.minimumInteritemSpacing = 0
         
-        var width = floor(self.photoCollectionView.frame.size.width/3)
+        var width = floor(photoCollectionView.frame.size.width/3)
         width = width - 1
         layout.itemSize = CGSize(width: width, height: width)
-        self.photoCollectionView.collectionViewLayout = layout
+        photoCollectionView.collectionViewLayout = layout
     }
-    
-    //MARK - collection view delegates
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
@@ -105,7 +99,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     func clearExistingPhotosfromPin(){
         
-        var photosToRemove = self.myAnnotation?.pin?.photos
+        var photosToRemove = myAnnotation?.pin?.photos
         if let photosToRemove = photosToRemove{
             for photo in photosToRemove{
                 sharedContext.deleteObject(photo)
@@ -115,7 +109,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func removePhotoFromPin(index: Int){
-        var photoToRemove = self.myAnnotation?.pin?.photos[index]
+        var photoToRemove = myAnnotation?.pin?.photos[index]
         if let photoToRemove = photoToRemove{
             sharedContext.deleteObject(photoToRemove)
         }
@@ -170,8 +164,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func fetchNewFlickrImages(lat: String, lng: String){
-        self.newCollectionBtn.enabled = false
-        let nextPageNumber = self.getNextPageNumber()
+        newCollectionBtn.enabled = false
+        let nextPageNumber = getNextPageNumber()
         if (nextPageNumber >= 0){
             fetchAndDisplayFlickrImages(lat, lng: lng, pageNum: nextPageNumber)
         }else{
@@ -199,7 +193,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         var selectedPhotoCell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCell
-        self.showAlertAction(indexPath)
+        showAlertAction(indexPath)
     }
     
     func showAlertAction(indexPath: NSIndexPath){
@@ -207,7 +201,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         
         //cancel button
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+        presentViewController(alert, animated: true, completion: nil)
         //OK button
         alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { action in
             switch action.style{
@@ -245,6 +239,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
                 cell.photoImgView.image = photo.photoImage
                 cell.progressView.hidden = true
             }else{
+                
                 var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(photo)
                 
                 if let photoUrl = photoUrl{
@@ -267,8 +262,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
                 }
             }
         }
-        
-        //        ImageConfig.sharedInstance().loadImage(cell.photoImgView, progressView: cell.progressView, photo: photo!)
     }
     
     

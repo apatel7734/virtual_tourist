@@ -70,35 +70,5 @@ class ImageConfig {
     struct Caches {
         static let imageCache = ImageCache()
     }
-    
-    /*
-    func loadImage(imageView: UIImageView, progressView: UIView, photo: Photo){
-        if(photo.photoImage != nil){
-            println("Cached Image found....")
-            dispatch_async(dispatch_get_main_queue()) {
-                imageView.image = photo.photoImage
-                progressView.hidden = true
-            }
-        }else{
-            println("Cached Image Not found....")
-            var photoUrl = ImageConfig.sharedInstance().getPhotoUrl(photo)
-            if let photoUrl = photoUrl{
-                var photoNSURL: NSURL = NSURL(string: photoUrl)!
-                let request: NSURLRequest = NSURLRequest(URL: photoNSURL)
-                NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
-                    
-                    if error == nil {
-                        var photoImage = UIImage(data: data);
-                        //cache image.
-                        photo.photoImage = photoImage
-                        dispatch_async(dispatch_get_main_queue()) {
-                            imageView.image = photoImage
-                            progressView.hidden = true
-                        }
-                    }
-                })
-            }
-        }
-    }
-    */
+
 }
