@@ -96,6 +96,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         var photosToRemove = myAnnotation?.pin?.photos
         if let photosToRemove = photosToRemove{
             for photo in photosToRemove{
+                photo.photoImage = nil
                 sharedContext.deleteObject(photo)
             }
         }
@@ -105,6 +106,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     func removePhotoFromPin(index: Int){
         var photoToRemove = myAnnotation?.pin?.photos[index]
         if let photoToRemove = photoToRemove{
+            photoToRemove.photoImage = nil
             sharedContext.deleteObject(photoToRemove)
         }
         CoreDataStackManager.sharedInstance().saveContext()
